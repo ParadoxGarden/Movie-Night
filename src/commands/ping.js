@@ -1,5 +1,5 @@
 const { SlashCommand, CommandOptionType, ApplicationCommandPermissionType } = require('slash-create');
-const s = require('../settings');
+const s = require('../config/settings');
 ds = s.settings['discord']
 
 module.exports = class HelloCommand extends SlashCommand {
