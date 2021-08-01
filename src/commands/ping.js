@@ -1,7 +1,7 @@
 const { SlashCommand, CommandOptionType, ApplicationCommandPermissionType } = require('slash-create');
 const s = require('../config/settings');
 ds = s.settings['discord']
-
+guildid = ds['guild']
 module.exports = class HelloCommand extends SlashCommand {
     constructor(creator) {
       super(creator, {
@@ -11,7 +11,7 @@ module.exports = class HelloCommand extends SlashCommand {
         defaultPermission: false,
         // Permissions are mapped by guild ID like this
         permissions: {
-          870106495474368524: [
+          guildid: [
             {
               type: ApplicationCommandPermissionType.ROLE,
               id: ds['role'],
