@@ -7,7 +7,7 @@ settings = s;
 var bs = settings['bot']
 var ds = settings["discord"]
 const creator = new SlashCreator({
-    applicationID: '12345678901234567',
+    applicationID: ds['id'],
     publicKey: ds['key'],
     token: ds['token'],
     serverPort: bs['port'],
