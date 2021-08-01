@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "express": "^4.17.1",
+    "js-yaml": "^4.1.0",
+    "moviedb": "^0.2.10",
+    "slash-create": "^3.4.1"
+  }
+}
