@@ -10,7 +10,9 @@ const creator = new SlashCreator({
     applicationID: '12345678901234567',
     publicKey: ds['key'],
     token: ds['token'],
-    serverPort: bs['port']
+    serverPort: bs['port'],
+    serverHost: bs['host'],
+    endpointPath: bs['endpoint']
 });
 
 creator.registerCommandsIn(path.join(__dirname, 'commands')).syncCommands().withServer(new ExpressServer()).startServer()
