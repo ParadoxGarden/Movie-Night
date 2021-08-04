@@ -28,4 +28,4 @@ creator.on('commandRegister', (command) =>
 creator.on('commandError', (command, error) => logger.error(`Command ${command.commandName}:`, error));
 
 
-creator.registerCommandsIn(path.join(__dirname, 'commands')).syncCommands().withServer(new ExpressServer()).startServer()
+creator.registerCommandsIn(path.join(__dirname, 'commands')).syncCommands({deleteCommands=true,skipGuildErrors=true,syncGuilds=true,syncPermissions=true}).withServer(new ExpressServer()).startServer()
