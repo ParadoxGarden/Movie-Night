@@ -2,10 +2,12 @@ const TMDB = require('moviedb');
 const path = require('path');
 const { SlashCreator, ExpressServer} = require('slash-create');
 const s = require('./config/settings').settings;
-settings = s;
+const CatLoggr = require('cat-loggr');
 
+settings = s;
 var bs = settings['bot']
 var ds = settings["discord"]
+const logger = new CatLoggr().setLevel(bs['debug'] === 'true' ? 'debug' : 'info');
 const creator = new SlashCreator({
     applicationID: ds['id'],
     publicKey: ds['key'],
