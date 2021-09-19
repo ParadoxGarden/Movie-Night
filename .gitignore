@@ -1,6 +1,3 @@
 node_modules
-*package-lock*
-__pycache__
-movies
+package-lock.json
 *.yaml
-**venv/**
