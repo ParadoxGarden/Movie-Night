@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@david98hall/tmdb-js": "^1.0.1",
     "@discordjs/builders": "^0.6.0",
     "@discordjs/rest": "^0.1.0-canary.0",
     "@discordjs/voice": "^0.6.0",
@@ -7,7 +8,9 @@
     "discord-api-types": "^0.23.1",
     "discord.js": "^13.1.0",
     "json": "^11.0.0",
-    "themoviedb-javascript-library": "github:cavestri/themoviedb-javascript-library",
+    "moviedb-promise": "^3.1.10",
+    "node-emoji": "^1.11.0",
+    "number-to-emoji": "^1.0.0",
     "utf-8-validate": "^5.0.5"
   },
   "devDependencies": {

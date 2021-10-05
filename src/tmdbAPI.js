@@ -1,3 +1,15 @@
-const theMovieDb = require('themoviedb-javascript-library');
+const { MovieDb } = require('moviedb-promise');
 const { tmdb } = require('../config/settings.json');
-theMovieDb.common.api_key = tmdb.token;
+
+class tmdbAPI {
+	constructor(token) {
+		this.mdb = new MovieDb(token);
+	}
+	stripTMDBURL(URL) {
+		return URL.split('/').pop().split('-')[0];
+	}
+}
+
+module.exports = {
+	api: new tmdbAPI(tmdb.token),
+};
