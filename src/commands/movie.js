@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
 const url = require('url');
 const emoji = require('number-to-emoji');
+const { MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { api } = require('../tmdbAPI.js');
 
@@ -14,8 +15,7 @@ module.exports = {
 			subcommand
 				.setName('add')
 				.setDescription('Adds a movie to the vote list')
-				.addStringOption(option => option.setName('movie').setRequired(true).setDescription('Movie to add'))
-				.addStringOption(option => option.setName('year').setDescription('Year')))
+				.addStringOption(option => option.setName('movie').setRequired(true).setDescription('Movie to add')))
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName('list')
@@ -69,32 +69,34 @@ module.exports = {
 			}
 			else {
 				const search = await api.mdb.searchMovie({ query: message });
-				console.log(search);
 				movieID = search.results[0].id;
+
+				const movieDoc = await api.mdb.movieInfo({ id:movieID });
+				const movielist = JSON.parse(await fs.readFile(movielistFile));
+
+				const reply = `[${movieDoc.title}](https://www.themoviedb.org/movie/${movieDoc.id}) is the movie you want to add?`;
+
+				const row = new MessageActionRow()
+					.addComponents(
+						new MessageButton()
+							.setCustomId('yes')
+							.setLabel('Yes')
+							.setStyle('SUCCESS'),
+						new MessageButton()
+							.setCustomId('next')
+							.setLabel('Next')
+							.setStyle('SECONDARY'),
+						new MessageButton()
+							.setCustomId('no')
+							.setLabel('No')
+							.setStyle('DANGER'),
+					);
+
+				movielist.temp.search = search;
+				await fs.writeFile(movielistFile, JSON.stringify(movielist, null, 4));
+				await interaction.reply({ content:reply, components: [row] });
 			}
-			const movieDoc = await api.mdb.movieInfo({ id:movieID });
-			const list = JSON.parse(await fs.readFile(movielistFile)).list;
 
-			list.length++;
-			const lenEmoji = emoji.toEmoji(list.length);
-			const reply = `${movieDoc.title} has been addded to the Movie Night voting list with voteEmoji: ${lenEmoji}`;
-
-			const date = new Date();
-			const movie = {
-				id: movieDoc.id,
-				description: movieDoc.overview,
-				poster: movieDoc.poster_path,
-				tagline: movieDoc.tagline,
-				emoji: lenEmoji,
-				runtime: `${Math.floor(movieDoc.runtime / 60)}:${movieDoc.runtime % 60}`,
-				title: movieDoc.title,
-				time: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}::${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`,
-			};
-
-			await fs.writeFile(`movies/${movieDoc.title}.json`.replace(' ', '_'), JSON.stringify(movieDoc, null, 4));
-			list.movies.push(movie);
-			await fs.writeFile(movielistFile, JSON.stringify({ list: list }, null, 4));
-			await interaction.reply(reply);
 			break;
 		}
 		}

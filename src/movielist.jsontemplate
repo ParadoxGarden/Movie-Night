@@ -2,5 +2,9 @@
     "list": {
         "length": 0,
         "movies": []
+    },
+    "temp": {
+        "searchNum": 0,
+        "search": {}
     }
 }
