@@ -18,6 +18,10 @@ module.exports = {
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName('show')
+				.setDescription('Shows the current votes for each movie, and who voted'))
+		.addSubcommand(subcommand =>
+			subcommand
+				.setName('test')
 				.setDescription('Shows the current votes for each movie, and who voted')),
 	async execute(interaction) {
 		const subcommand = interaction.options._subcommand;

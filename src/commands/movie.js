@@ -5,7 +5,7 @@ const { MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { api } = require('../tmdbAPI.js');
 
-const movielistFile = 'movielist.json';
+const movielistFile = 'data/movielist.json';
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -79,15 +79,15 @@ module.exports = {
 				const row = new MessageActionRow()
 					.addComponents(
 						new MessageButton()
-							.setCustomId('yes')
+							.setCustomId('movie-yes')
 							.setLabel('Yes')
 							.setStyle('SUCCESS'),
 						new MessageButton()
-							.setCustomId('next')
+							.setCustomId('movie-next')
 							.setLabel('Next')
 							.setStyle('SECONDARY'),
 						new MessageButton()
-							.setCustomId('no')
+							.setCustomId('movie-no')
 							.setLabel('No')
 							.setStyle('DANGER'),
 					);
