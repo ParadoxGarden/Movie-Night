@@ -17,9 +17,11 @@ client.login(discord['token']);
 client.commands = new Collection();
 client.buttons = new Collection();
 
-const commandFiles = fs.readdirSync('commands').filter(file => file.endsWith('.js'));
-const buttonFiles = fs.readdirSync('buttons').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
+const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 const commands = [];
+
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	// Set a new item in the Collection
@@ -27,6 +29,7 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 	commands.push(command.data.toJSON());
 }
+
 for (const file of buttonFiles) {
 	const button = require(`./buttons/${file}`);
 	// Set a new item in the Collection
@@ -34,7 +37,18 @@ for (const file of buttonFiles) {
 	client.buttons.set(button.name, button);
 }
 
+for (const file of eventFiles) {
+	const event = require(`./events/${file}`);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	}
+	else {
+		client.on(event.name, (...args) => event.execute(...args));
+	}
+}
+
 const rest = new REST({ version: '9' }).setToken(discord['token']);
+
 (async () => {
 	try {
 		console.log('Started refreshing application (/) commands.');
@@ -48,36 +62,3 @@ const rest = new REST({ version: '9' }).setToken(discord['token']);
 		console.error(error);
 	}
 })();
-
-client.on('interactionCreate', async interaction => {
-	if (interaction.isButton()) {
-		const button = client.buttons.get(interaction.customId);
-		if (!button) return;
-		try {
-			await button.execute(interaction);
-		}
-		catch (error) {
-			console.log(error);
-			await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
-
-		}
-	}
-	if (interaction.isCommand()) {
-
-		const command = client.commands.get(interaction.commandName);
-
-		if (!command) return;
-
-		try {
-			await command.execute(interaction);
-		}
-		catch (error) {
-			console.error(error);
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-		}
-	}
-	else {
-		return;
-	}
-
-});
