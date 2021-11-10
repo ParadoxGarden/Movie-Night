@@ -5,7 +5,7 @@ const emoji = require('number-to-emoji');
 const movielistFile = 'data/movielist.json';
 
 module.exports = {
-	name: 'movie-yes',
+	name: 'movie',
 	execute: async (interaction) => {
 		const movielist = JSON.parse(await fs.readFile(movielistFile));
 		const searchNum = movielist.temp.searchNum;
@@ -28,15 +28,12 @@ module.exports = {
 		if (movieDoc.tagline) {
 			movie.tagline = movieDoc.tagline;
 		}
-		if (movieDoc.runtime) {
-			movie.runtime = `${Math.floor(movieDoc.runtime / 60)}:${`0${movieDoc.runtime % 60}`.slice(-2)}`;
-		}
 		movielist.list.movies.push(movie);
 		movielist.temp.searchNum = 0;
 		movielist.temp.search = {};
 		await fs.writeFile(movielistFile, JSON.stringify(movielist, null, 4));
 
-		const reply = `[${movie.title}](https://www.themoviedb.org/movie/${movie.id}) has been added to the movie vote list with vote emoji ${movie.lenEmoji}`;
+		const reply = `[${movie.title}](https://www.themoviedb.org/movie/${movie.id}) has been added to the movie vote list with vote emoji ${movie.emoji}`;
 
 		await interaction.reply(reply);
 	},

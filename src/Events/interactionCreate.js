@@ -14,6 +14,18 @@ module.exports = {
 
 			}
 		}
+		if (interaction.isSelectMenu()) {
+			const select = client.selectMenu.get(interaction.customId);
+			if (!select) return;
+			try {
+				await select.execute(interaction);
+			}
+			catch (error) {
+				console.log(error);
+				await interaction.reply({ content: 'There was an error while executing this selection!', ephemeral: true });
+
+			}
+		}
 		if (interaction.isCommand()) {
 
 			const command = client.commands.get(interaction.commandName);

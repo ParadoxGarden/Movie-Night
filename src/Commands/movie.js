@@ -1,7 +1,6 @@
 const fs = require('fs').promises;
 const url = require('url');
-const emoji = require('number-to-emoji');
-const { MessageActionRow, MessageButton } = require('discord.js');
+const { MessageActionRow, MessageSelectMenu } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { api } = require('../tmdbAPI.js');
 
@@ -63,39 +62,35 @@ module.exports = {
 		}
 		case 'add': {
 			const message = interaction.options._hoistedOptions[0].value;
-			let movieID;
-			if (validURL(message)) {
-				movieID = api.stripTMDBURL(message);
-			}
-			else {
-				const search = await api.mdb.searchMovie({ query: message });
-				movieID = search.results[0].id;
+			const option = [];
+			let reply = `Searched ${message} Results:\n`;
+			const search = await api.mdb.searchMovie({ query: message });
+			search.results.forEach((movie) => {
+				// reply += `[${movie.title}](https://www.themoviedb.org/movie/${movie.id})\n`;
+				reply += `${movie.title}\n`;
+				option.push(
+					{
+						label: movie.title,
+						description: movie.overview.slice(0, 50),
+						value: `${movie.id}`,
+					},
+				);
+			});
 
-				const movieDoc = await api.mdb.movieInfo({ id:movieID });
-				const movielist = JSON.parse(await fs.readFile(movielistFile));
+			const movielist = JSON.parse(await fs.readFile(movielistFile));
 
-				const reply = `[${movieDoc.title}](https://www.themoviedb.org/movie/${movieDoc.id}) is the movie you want to add?`;
+			const row = new MessageActionRow()
+				.addComponents(
+					new MessageSelectMenu()
+						.setCustomId('movie')
+						.setPlaceholder('Nothing Selected')
+						.addOptions(option),
+				);
 
-				const row = new MessageActionRow()
-					.addComponents(
-						new MessageButton()
-							.setCustomId('movie-yes')
-							.setLabel('Yes')
-							.setStyle('SUCCESS'),
-						new MessageButton()
-							.setCustomId('movie-next')
-							.setLabel('Next')
-							.setStyle('SECONDARY'),
-						new MessageButton()
-							.setCustomId('movie-no')
-							.setLabel('No')
-							.setStyle('DANGER'),
-					);
+			movielist.temp.search = search;
+			await fs.writeFile(movielistFile, JSON.stringify(movielist, null, 4));
+			await interaction.reply({ content: reply, components: [row] });
 
-				movielist.temp.search = search;
-				await fs.writeFile(movielistFile, JSON.stringify(movielist, null, 4));
-				await interaction.reply({ content:reply, components: [row] });
-			}
 
 			break;
 		}

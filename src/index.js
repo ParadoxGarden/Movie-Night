@@ -16,14 +16,16 @@ client.login(discord['token']);
 
 client.commands = new Collection();
 client.buttons = new Collection();
+client.selectMenu = new Collection();
+const commandFiles = fs.readdirSync('./Commands').filter(file => file.endsWith('.js'));
+const buttonFiles = fs.readdirSync('./Buttons').filter(file => file.endsWith('.js'));
+const eventFiles = fs.readdirSync('./Events').filter(file => file.endsWith('.js'));
+const selectMenuFiles = fs.readdirSync('./SelectMenu').filter(file => file.endsWith('.js'));
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
-const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 const commands = [];
 
 for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
+	const command = require(`./Commands/${file}`);
 	// Set a new item in the Collection
 	// With the key as the command name and the value as the exported module
 	client.commands.set(command.data.name, command);
@@ -31,14 +33,19 @@ for (const file of commandFiles) {
 }
 
 for (const file of buttonFiles) {
-	const button = require(`./buttons/${file}`);
+	const button = require(`./Buttons/${file}`);
 	// Set a new item in the Collection
 	// With the key as the command name and the value as the exported module
 	client.buttons.set(button.name, button);
 }
-
+for (const file of selectMenuFiles) {
+	const selectMenu = require(`./SelectMenu/${file}`);
+	// Set a new item in the Collection
+	// With the key as the command name and the value as the exported module
+	client.selectMenu.set(selectMenu.name, selectMenu);
+}
 for (const file of eventFiles) {
-	const event = require(`./events/${file}`);
+	const event = require(`./Events/${file}`);
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));
 	}
